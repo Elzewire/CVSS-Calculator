@@ -1,0 +1,33 @@
+h1 {
+    margin-top: 20px;
+}
+
+h3 {
+    margin-top: 30px;
+}
+
+.metric {
+    margin-top: 20px;
+}
+
+
+.btn-group {
+    width: 100%;
+}
+
+.btn-group .btn {
+    width: 100%;
+}
+
+footer {
+    height: 200px;
+}
+
+#calc {
+    margin-top: 30px;
+}
+
+.results {
+    margin-top: 30px;
+    display: none;
+}

@@ -1,0 +1,222 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="{% static "css/style.css" %}">
+    <title>Калькулятор CVSS V2</title>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg sticky-top navbar-dark bg-dark">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+            <li class="nav-item active">
+                <a class="nav-link" href="{% url "cvss2" %}">Калькулятор CVSS V2</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url "cvss3" %}">Калькулятор CVSS V3</a>
+            </li>
+            </ul>
+        </div>
+    </nav>
+    <div class="container shadow-lg">
+        <div class="row">
+            <div class="col">
+                <div class="row">
+                    <div class="col">
+                        <h1>Калькулятор CVSS V2</h1>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <button type="submit" class="btn btn-info" id="calc">Рассчитать</button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <div class="results" id="results">
+                            <h5 id="bscore">Базовая оценка: </h5>
+                            <h5 id="tscore">Временная оценка: </h5>
+                            <h5 id="escore">Контекстная оценка: </h5>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <h3>Базовые метрики</h3><small id="bvec"></small>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <div class="metric">
+                            <h5>Способ получения доступа (AV):</h5>
+                            <div class="btn-group" role="group" aria-label="Basic example" id="AV">
+                                <a type="button" class="btn btn-outline-success active" onclick="setActive(0, 0)" id="L">Локальный (L)</a>
+                                <a type="button" class="btn btn-outline-warning" onclick="setActive(0, 1)" id="A">Смежная сеть (A)</a>
+                                <a type="button" class="btn btn-outline-danger" onclick="setActive(0, 2)" id="N">Сетевой (N)</a>
+                            </div>
+                        </div>
+                        <div class="metric">
+                            <h5>Сложность получения доступа (AC):</h5>
+                            <div class="btn-group" role="group" aria-label="Basic example" id="AC">
+                                <a type="button" class="btn btn-outline-success active" onclick="setActive(1, 0)" id="H">Высокая (H)</a>
+                                <a type="button" class="btn btn-outline-warning" onclick="setActive(1, 1)" id="M">Средняя (M)</a>
+                                <a type="button" class="btn btn-outline-danger" onclick="setActive(1, 2)" id="L">Низкая (L)</a>
+                            </div>
+                        </div>
+                        <div class="metric">
+                            <h5>Аутентификация (Au):</h5>
+                            <div class="btn-group" role="group" aria-label="Basic example" id="Au">
+                                <a type="button" class="btn btn-outline-success active" onclick="setActive(2, 0)" id="M">Множественная (M)</a>
+                                <a type="button" class="btn btn-outline-warning" onclick="setActive(2, 1)" id="S">Единственная (S)</a>
+                                <a type="button" class="btn btn-outline-danger" onclick="setActive(2, 2)" id="N">Не требуется (N)</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="metric">
+                            <h5>Влияние на конфиденциальность (С):</h5>
+                            <div class="btn-group" role="group" aria-label="Basic example" id="C">
+                                <a type="button" class="btn btn-outline-success active" onclick="setActive(3, 0)" id="N">Не оказывает (N)</a>
+                                <a type="button" class="btn btn-outline-warning" onclick="setActive(3, 1)" id="P">Частичное (P)</a>
+                                <a type="button" class="btn btn-outline-danger" onclick="setActive(3, 2)" id="C">Полное (C)</a>
+                            </div>
+                        </div>
+                        <div class="metric">
+                            <h5>Влияние на целостность (I):</h5>
+                            <div class="btn-group" role="group" aria-label="Basic example" id="I">
+                                <a type="button" class="btn btn-outline-success active" onclick="setActive(4, 0)" id="N">Не оказывает (N)</a>
+                                <a type="button" class="btn btn-outline-warning" onclick="setActive(4, 1)" id="P">Частичное (P)</a>
+                                <a type="button" class="btn btn-outline-danger" onclick="setActive(4, 2)" id="C">Полное (C)</a>
+                            </div>
+                        </div>
+                        <div class="metric">
+                            <h5>Влияние на доступность (A):</h5>
+                            <div class="btn-group" role="group" aria-label="Basic example" id="A">
+                                <a type="button" class="btn btn-outline-success active" onclick="setActive(5, 0)" id="N">Не оказывает (N)</a>
+                                <a type="button" class="btn btn-outline-warning" onclick="setActive(5, 1)" id="P">Частичное (P)</a>
+                                <a type="button" class="btn btn-outline-danger" onclick="setActive(5, 2)" id="C">Полное (C)</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <h3>Временные метрики</h3><small id="tvec"></small>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <div class="metric">
+                            <h5>Возможость использования (E):</h5>
+                            <div class="btn-group" role="group" aria-label="Basic example" id="E">
+                                <a type="button" class="btn btn-outline-danger active" onclick="setActive(6, 0)" id="ND">Не определено (ND)</a>
+                                <a type="button" class="btn btn-outline-success" onclick="setActive(6, 1)" id="U">Теоретически (U)</a>
+                                <a type="button" class="btn btn-outline-warning" onclick="setActive(6, 2)" id="POC">Есть концепция (POC)</a>
+                                <a type="button" class="btn btn-outline-warning" onclick="setActive(6, 3)" id="F">Есть сценарий (F)</a>
+                                <a type="button" class="btn btn-outline-danger" onclick="setActive(6, 4)" id="H">Высокая (H)</a>
+                            </div>
+                        </div>
+                        <div class="metric">
+                            <h5>Уровень исправления (RL):</h5>
+                            <div class="btn-group" role="group" aria-label="Basic example" id="RL">
+                                <a type="button" class="btn btn-outline-danger active" onclick="setActive(7, 0)" id="ND">Не определено (ND)</a>
+                                <a type="button" class="btn btn-outline-success" onclick="setActive(7, 1)" id="OF">Официальное (OF)</a>
+                                <a type="button" class="btn btn-outline-warning" onclick="setActive(7, 2)" id="TF">Временное (TF)</a>
+                                <a type="button" class="btn btn-outline-warning" onclick="setActive(7, 3)" id="W">Рекомендации (W)</a>
+                                <a type="button" class="btn btn-outline-danger" onclick="setActive(7, 4)" id="U">Недоступно (U)</a>
+                            </div>
+                        </div>
+                        <div class="metric">
+                            <h5>Степень достоверности источника (RC):</h5>
+                            <div class="btn-group" role="group" aria-label="Basic example" id="RC">
+                                <a type="button" class="btn btn-outline-danger active" onclick="setActive(8, 0)" id="ND">Не определено (ND)</a>
+                                <a type="button" class="btn btn-outline-success" onclick="setActive(8, 1)" id="UC">Не подтверждена (UC)</a>
+                                <a type="button" class="btn btn-outline-warning" onclick="setActive(8, 2)" id="UR">Не доказана (UR)</a>
+                                <a type="button" class="btn btn-outline-danger" onclick="setActive(8, 3)" id="C">Подтверждена (С)</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <h3>Контекстные метрики</h3><small id="evec"></small>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <div class="metric">
+                            <h5>Вероятность нанесения косвенного ущерба (CDP):</h5>
+                            <div class="btn-group" role="group" aria-label="Basic example" id="CDP">
+                                <a type="button" class="btn btn-outline-success active" onclick="setActive(9, 0)" id="ND">Не определено (ND)</a>
+                                <a type="button" class="btn btn-outline-success" onclick="setActive(9, 1)" id="N">Отсутствует (N)</a>
+                                <a type="button" class="btn btn-outline-warning" onclick="setActive(9, 2)" id="L">Низкая (L)</a>
+                                <a type="button" class="btn btn-outline-warning" onclick="setActive(9, 3)" id="LM">Средняя (LM)</a>
+                                <a type="button" class="btn btn-outline-danger" onclick="setActive(9, 4)" id="MH">Повышенная (MH)</a>
+                                <a type="button" class="btn btn-outline-danger" onclick="setActive(9, 5)" id="H">Высокая (H)</a>
+                            </div>
+                        </div>
+                        <div class="metric">
+                            <h5>Плотность целей (TD):</h5>
+                            <div class="btn-group" role="group" aria-label="Basic example" id="TD">
+                                <a type="button" class="btn btn-outline-danger active" onclick="setActive(10, 0)" id="ND">Не определено (ND)</a>
+                                <a type="button" class="btn btn-outline-success" onclick="setActive(10, 1)" id="N">Отсутствует (N)</a>
+                                <a type="button" class="btn btn-outline-warning" onclick="setActive(10, 2)" id="L">Низкая (L)</a>
+                                <a type="button" class="btn btn-outline-warning" onclick="setActive(10, 3)" id="M">Средняя (M)</a>
+                                <a type="button" class="btn btn-outline-danger" onclick="setActive(10, 4)" id="H">Высокая (H)</a>
+                            </div>
+                        </div>
+                        <div class="metric">
+                            <h5>Требования к конфиденциальности (CR):</h5>
+                            <div class="btn-group" role="group" aria-label="Basic example" id="CR">
+                                <a type="button" class="btn btn-outline-warning active" onclick="setActive(11, 0)" id="X">Не определено (X)</a>
+                                <a type="button" class="btn btn-outline-success" onclick="setActive(11, 1)" id="L">Низкие (L)</a>
+                                <a type="button" class="btn btn-outline-warning" onclick="setActive(11, 2)" id="M">Средние (M)</a>
+                                <a type="button" class="btn btn-outline-danger" onclick="setActive(11, 3)" id="H">Высокие (H)</a>
+                            </div>
+                        </div>
+                        <div class="metric">
+                            <h5>Требования к целостности (IR):</h5>
+                            <div class="btn-group" role="group" aria-label="Basic example" id="IR">
+                                <a type="button" class="btn btn-outline-warning active" onclick="setActive(12, 0)" id="X">Не определено (X)</a>
+                                <a type="button" class="btn btn-outline-success" onclick="setActive(12, 1)" id="L">Низкие (L)</a>
+                                <a type="button" class="btn btn-outline-warning" onclick="setActive(12, 2)" id="M">Средние (M)</a>
+                                <a type="button" class="btn btn-outline-danger" onclick="setActive(12, 3)" id="H">Высокие (H)</a>
+                            </div>
+                        </div>
+                            <div class="metric">
+                            <h5>Требования к доступности (AR):</h5>
+                            <div class="btn-group" role="group" aria-label="Basic example" id="AR">
+                                <a type="button" class="btn btn-outline-warning active" onclick="setActive(13, 0)" id="X">Не определено (X)</a>
+                                <a type="button" class="btn btn-outline-success" onclick="setActive(13, 1)" id="L">Низкие (L)</a>
+                                <a type="button" class="btn btn-outline-warning" onclick="setActive(13, 2)" id="M">Средние (M)</a>
+                                <a type="button" class="btn btn-outline-danger" onclick="setActive(13, 3)" id="H">Высокие (H)</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <footer>{% csrf_token %}</footer>
+    </div>
+
+    <script src="{% static "js/btn.js" %}"></script>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+    <script src="{% static "js/calc2.js" %}"></script>
+</body>
+</html>
